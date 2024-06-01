@@ -1,5 +1,3 @@
-// view_votes_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:whatsapp_poll/models/poll_item_model.dart';
 
@@ -11,28 +9,28 @@ class ViewVotesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: Colors.white, // Change background color to white
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: Colors.white, // Change app bar background color to white
         centerTitle: true,
-        leading: const Icon(Icons.menu, color: Color(0xFFE4A951)),
-        title: Text(
-          'POLLING APP - ${pollItem.options[0]}', // Dynamic title based on first option
-          style: TextStyle(color: Color(0xFFE4A951)),
+        leading: const Icon(Icons.menu, color: Colors.blueGrey), // Change icon color to blueGrey
+        title: const Text(
+          'POLLING APP ', // Dynamic title based on first option
+          style: TextStyle(color: Colors.blueGrey), // Change title color to blueGrey
         ),
         actions: [
           Container(
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFE4A951)),
+              border: Border.all(color: Colors.blueGrey), // Change border color to blueGrey
             ),
             child: const CircleAvatar(
-              backgroundColor: Color(0xFF1E1E1E),
+              backgroundColor: Colors.white, // Change circle avatar background color to white
               child: Text(
                 'R',
                 style: TextStyle(
-                  color: Color(0xFFE4A951),
+                  color: Colors.blueGrey, // Change text color to blueGrey
                   fontSize: 20,
                 ),
               ),
@@ -49,7 +47,7 @@ class ViewVotesPage extends StatelessWidget {
               child: Text(
                 'Result',
                 style: TextStyle(
-                  color: Color(0xFFE4A951),
+                  color: Colors.blueGrey, // Change text color to blueGrey
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -71,8 +69,15 @@ class ViewVotesPage extends StatelessWidget {
       margin: const EdgeInsets.all(18.0),
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Colors.black26,
+        color: Colors.white, // Change container background color to white
         borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(0.8), // Change shadow color to blueGrey with opacity
+            blurRadius: 5,
+            offset: const Offset(0, 15),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +86,7 @@ class ViewVotesPage extends StatelessWidget {
             width: double.infinity,
             decoration: const BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: Colors.white38, width: 0.5),
+                bottom: BorderSide(color: Colors.blueGrey, width: 0.5), // Change border color to blueGrey
               ),
             ),
             child: Padding(
@@ -89,7 +94,7 @@ class ViewVotesPage extends StatelessWidget {
               child: Text(
                 optionTitle,
                 style: const TextStyle(
-                  color: Color(0xFFE4A951),
+                  color: Colors.blueGrey, // Change text color to blueGrey
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -102,7 +107,7 @@ class ViewVotesPage extends StatelessWidget {
             child: Text(
               'Votes: $voteCount', // Using the non-nullable voteCount variable
               style: const TextStyle(
-                color: Color(0xFFE4A951),
+                color: Colors.blueGrey, // Change text color to blueGrey
               ),
               textAlign: TextAlign.start,
             ),
@@ -111,5 +116,4 @@ class ViewVotesPage extends StatelessWidget {
       ),
     );
   }
-
 }

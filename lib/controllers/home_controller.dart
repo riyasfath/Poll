@@ -1,55 +1,54 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:whatsapp_poll/views/viewVotesPage.dart';
 import '../models/poll_item_model.dart';
 import '../services/create_poll_popup.dart';
-import '../views/viewVotesPage.dart';
 
 class HomeController extends GetxController {
-  Rx<PollItem?> currentPoll = Rx<PollItem?>(null);
-  Rx<String?> selectedOption = Rx<String?>(null); // Added selectedOption variable
+  RxList<PollItem> polls = <PollItem>[].obs; // List to store all polls
+  Rx<String?> selectedOption = Rx<String?>(null);
 
   @override
   void onInit() {
     super.onInit();
-    loadPoll();
+    loadPolls();
   }
 
-  void showCreatePollPopup() {
-    Get.dialog(CreatePollPopup(
-      onPollCreated: (pollItem) {
-        currentPoll.value = pollItem;
-        savePoll(pollItem);
-      },
-    ));
+  void showCreatePollPopup(BuildContext context) async {
+    CreatePollPopup(onPollCreated: (poll) {
+      polls.add(poll);
+      savePolls(); // Save polls after creation
+    }).show(context);
   }
 
-  void voteForOption(String option) {
-    selectedOption.value = option; // Update selectedOption when an option is voted
-    if (currentPoll.value != null) {
-      currentPoll.value!.voteForOption(option);
-      savePoll(currentPoll.value!);
+  void voteForOption(String option, int pollIndex) {
+    if (polls.length > pollIndex && polls[pollIndex] != null) {
+      selectedOption.value = option;
+      polls[pollIndex].voteForOption(option);
+      savePolls();
     }
   }
 
-  void viewVotes() {
-    if (currentPoll.value != null) {
-      Get.to(ViewVotesPage(currentPoll.value!));
+  Future<void> savePolls() async {
+    final prefs = await SharedPreferences.getInstance();
+    final encodedPolls = polls.map((poll) => poll.toString()).toList();
+    await prefs.setStringList('polls', encodedPolls); // Save all polls as a list
+  }
+
+  void viewVotes(int pollIndex) {
+    if (polls.length > pollIndex && polls[pollIndex] != null) {
+      Get.to(() =>ViewVotesPage(polls[pollIndex])); // Pass the selected poll object
     } else {
       Get.snackbar('Error', 'No poll available');
     }
   }
 
-  Future<void> savePoll(PollItem pollItem) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('poll', pollItem.toString());
-  }
-
-  Future<void> loadPoll() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? pollString = prefs.getString('poll');
-    if (pollString != null) {
-      currentPoll.value = PollItem.fromString(pollString);
+  Future<void> loadPolls() async {
+    final prefs = await SharedPreferences.getInstance();
+    final encodedPolls = prefs.getStringList('polls');
+    if (encodedPolls != null) {
+      polls.value = encodedPolls.map((data) => PollItem.fromString(data)).toList();
     }
   }
 }

@@ -1,41 +1,33 @@
-// poll_item_model.dart
-
-import 'dart:convert';
-
 class PollItem {
-  late String question;
-  late List<String> options;
-  late Map<String, int> votes;
+  String question;
+  List<String> options;
+  Map<String, int> votes;
 
   PollItem({
     required this.question,
     required this.options,
-    required this.votes,
-  });
+    Map<String, int>? votes,
+  }) : votes = votes ?? {};
 
-  // Method to vote for an option
   void voteForOption(String option) {
-    if (votes.containsKey(option)) {
-      votes[option] = votes[option]! + 1;
-    }
+    votes[option] = (votes[option] ?? 0) + 1;
   }
 
-  // Method to convert poll item to string
+  @override
   String toString() {
-    return jsonEncode({
-      'question': question,
-      'options': options,
-      'votes': votes,
-    });
+    return '$question|${options.join(',')}|${votes.entries.map((e) => '${e.key}:${e.value}').join(',')}';
   }
 
-  // Method to create poll item from string
-  factory PollItem.fromString(String jsonString) {
-    Map<String, dynamic> json = jsonDecode(jsonString);
-    return PollItem(
-      question: json['question'],
-      options: List<String>.from(json['options']),
-      votes: Map<String, int>.from(json['votes']),
-    );
+  static PollItem fromString(String data) {
+    final parts = data.split('|');
+    final question = parts[0];
+    final options = parts[1].split(',');
+    final votes = parts[2].split(',').fold<Map<String, int>>({}, (map, pair) {
+      final kv = pair.split(':');
+      map[kv[0]] = int.parse(kv[1]);
+      return map;
+    });
+
+    return PollItem(question: question, options: options, votes: votes);
   }
 }
